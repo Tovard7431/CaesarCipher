@@ -3,43 +3,30 @@ import java.util.Scanner;
 //Отвечает за чтение и запись файлов.
 
 public class FileManager {
-    public boolean readFile() {
-        byte key = 0;
-        String fileAddress = "";
-        String encryptedFileAddress = "";
+    private static byte key = 0;
+    private static String fileAddress = "";
+    private static String encryptedFileAddress = "";
+    private static char[] buffer = new char[1024];
+    private static int charsRead;
 
+    void readFile() throws IOException {
+        {
+            InputStream stream = System.in;
+            Scanner console = new Scanner(stream);
 
-        InputStream stream = System.in;
-        Scanner console = new Scanner(stream);
-
-        try {
             System.out.println("Specify the path to the text file:");
             fileAddress = console.nextLine();
-        } catch (Exception e) {
-            System.err.println("Error reading path: " + e.getMessage());
-        }
 
-        try {
             System.out.println("Specify the path where to write the cipher:");
             encryptedFileAddress = console.nextLine();
-        } catch (Exception e) {
-            System.err.println("Error reading path: " + e.getMessage());
-        }
 
-        try {
             System.out.println("Enter the key for encoding:");
             key = console.nextByte();
-        } catch (Exception e) {
-            System.err.println("Error reading key: " + e.getMessage());
         }
-
 
         try (FileReader reader = new FileReader(fileAddress);
              StringWriter writer = new StringWriter();
              OutputStream in = new FileOutputStream(encryptedFileAddress)) {
-
-            char[] buffer = new char[1024];
-            int charsRead;
 
             while ((charsRead = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, charsRead);
@@ -56,11 +43,9 @@ public class FileManager {
 
             in.write(answer);
 
-
         } catch (IOException e) {
-            System.err.println("Ошибка при чтении файла: " + e.getMessage());
-
+            throw new IOException();
+//            System.err.println("Error reading file: " + e.getMessage());
         }
-        return false;
     }
 }
