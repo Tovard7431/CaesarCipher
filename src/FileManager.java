@@ -3,27 +3,40 @@ import java.util.Scanner;
 //Отвечает за чтение и запись файлов.
 
 public class FileManager {
-    private static byte key = 0;
-    private static String fileAddress = "";
-    private static String encryptedFileAddress = "";
-    private static char[] buffer = new char[1024];
-    private static int charsRead;
+    byte key = 0;
+    String fileAddress = "";
+    String encryptedFileAddress = "";
+    char[] buffer = new char[1024];
+    int charsRead;
 
-    void readFile() throws IOException {
-        {
-            InputStream stream = System.in;
-            Scanner console = new Scanner(stream);
+    public void enterPathAndKey() {
+        InputStream stream = System.in;
+        Scanner console = new Scanner(stream);
 
-            System.out.println("Specify the path to the text file:");
-            fileAddress = console.nextLine();
+        System.out.println("Specify the path to the text file:");
+        fileAddress = console.nextLine();
 
-            System.out.println("Specify the path where to write the cipher:");
-            encryptedFileAddress = console.nextLine();
+        System.out.println("Specify the path where to write the cipher:");
+        encryptedFileAddress = console.nextLine();
 
-            System.out.println("Enter the key for encoding:");
-            key = console.nextByte();
+        System.out.println("Enter the key for encoding:");
+        key = console.nextByte();
+        while (true) {
+            if (key >= 0 && key <= 25) {
+                break;
+            } else if (key < 0) {
+                System.out.println("The key can't be negative.");
+                System.out.println("Enter new key for encoding:");
+                key = console.nextByte();
+            } else if (key > 25) {
+                System.out.println("The key can't be greater than 25.");
+                System.out.println("Enter new key for encoding:");
+                key = console.nextByte();
+            }
         }
+    }
 
+    public void readFile() {
         try (FileReader reader = new FileReader(fileAddress);
              StringWriter writer = new StringWriter();
              OutputStream in = new FileOutputStream(encryptedFileAddress)) {
@@ -44,8 +57,9 @@ public class FileManager {
             in.write(answer);
 
         } catch (IOException e) {
-            throw new IOException();
-//            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println("Error reading file: " + e.getMessage());
         }
     }
+
+
 }
